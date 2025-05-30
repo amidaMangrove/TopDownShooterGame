@@ -39,7 +39,7 @@ const player = {
     height: 20,
     speed: 220, // ピクセル/秒
     rotationSpeed: 180, // 度/秒
-    angle: 0, // 角度（度）
+    angle: 0, // 角度（度）- 右向きが0度
     color: '#00ff00', // 暗い背景に見えるように明るい緑に戻す
     maxHP: 100,
     currentHP: 100,
@@ -102,14 +102,6 @@ const explosionSettings = {
     particleLifetime: 0.8, // パーティクルの生存時間（秒）
     particleSize: 3, // パーティクルのサイズ
     colors: ['#ff6600', '#ff9900', '#ffcc00', '#ff3300', '#ffff00'] // 爆発の色
-};
-
-// 画面揺れエフェクトの設定
-const screenShake = {
-    intensity: 0, // 現在の揺れの強度
-    duration: 0, // 残り時間
-    offsetX: 0, // X軸のオフセット
-    offsetY: 0  // Y軸のオフセット
 };
 
 // バーチャルパッドの設定
@@ -358,6 +350,7 @@ function updatePlayer(deltaTime) {
     const aimDistance = Math.sqrt(gameState.virtualInput.aim.x ** 2 + gameState.virtualInput.aim.y ** 2);
     if (aimDistance > 0.2) { // デッドゾーン
         // 照準方向にプレイヤーを向ける（座標系を正しく調整）
+        // Math.atan2は右向きを0度とするので、右向きを基準にする
         const aimAngle = Math.atan2(gameState.virtualInput.aim.y, gameState.virtualInput.aim.x) * 180 / Math.PI;
         player.angle = aimAngle;
         
@@ -623,37 +616,8 @@ function checkCollision(rect1, rect2) {
              rect2.y + rect2.height < rect1.y);
 }
 
-// 画面揺れエフェクトを開始する関数
-function startScreenShake(intensity = 8, duration = 200) {
-    screenShake.intensity = intensity;
-    screenShake.duration = duration;
-}
-
-// 画面揺れエフェクトを更新する関数
-function updateScreenShake(deltaTime) {
-    if (screenShake.duration > 0) {
-        screenShake.duration -= deltaTime;
-        
-        // 揺れの強度を時間経過とともに減衰
-        const shakeRatio = screenShake.duration / 200; // 200msを基準
-        const currentIntensity = screenShake.intensity * shakeRatio;
-        
-        // ランダムなオフセットを生成
-        screenShake.offsetX = (Math.random() - 0.5) * currentIntensity * 2;
-        screenShake.offsetY = (Math.random() - 0.5) * currentIntensity * 2;
-        
-        if (screenShake.duration <= 0) {
-            screenShake.offsetX = 0;
-            screenShake.offsetY = 0;
-        }
-    }
-}
-
 // 爆発エフェクトの生成
 function createExplosion(x, y) {
-    // 画面揺れエフェクトを開始
-    startScreenShake(6, 150);
-    
     const explosion = {
         x: x,
         y: y,
@@ -830,12 +794,12 @@ function drawPlayer() {
     // プレイヤーの本体（中心基準で描画）
     ctx.fillRect(-player.width / 2, -player.height / 2, player.width, player.height);
     
-    // 向いている方向を示す三角形
+    // 向いている方向を示す三角形（右向きを0度基準）
     ctx.fillStyle = '#ffffff';
     ctx.beginPath();
-    ctx.moveTo(0, -player.height / 2 - 5); // 上の点
-    ctx.lineTo(-5, -player.height / 2); // 左下の点
-    ctx.lineTo(5, -player.height / 2); // 右下の点
+    ctx.moveTo(player.width / 2 + 5, 0); // 右の点（先端）
+    ctx.lineTo(player.width / 2, -5); // 上の点
+    ctx.lineTo(player.width / 2, 5); // 下の点
     ctx.closePath();
     ctx.fill();
     
@@ -1091,9 +1055,6 @@ function gameLoop(currentTime) {
         checkBulletEnemyCollisions();
         checkPlayerEnemyCollisions(currentTime);
     }
-    
-    // 画面揺れは常に更新（ゲームオーバー時も）
-    updateScreenShake(deltaTime);
     
     // 描画（ゲームオーバー時も継続）
     drawBackground();
