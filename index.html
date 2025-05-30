@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>トップダウンシューター</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="game-container">
+        <canvas id="gameCanvas" width="800" height="600"></canvas>
+        <div class="controls">
+            <p>WASD: 上下左右移動 | 左右矢印キー: 回転 | スペース: 射撃</p>
+            <p>モバイル: 左パッド移動 | 右パッド照準・自動射撃</p>
+        </div>
+        
+        <!-- バーチャルパッド -->
+        <div class="virtual-controls">
+            <!-- 移動パッド（左下） -->
+            <div class="movement-pad">
+                <div class="pad-outer">
+                    <div class="pad-inner" id="movementStick"></div>
+                </div>
+                <div class="pad-label">移動</div>
+            </div>
+            
+            <!-- 射撃・照準パッド（右下） -->
+            <div class="rotation-pad">
+                <div class="pad-outer">
+                    <div class="pad-inner" id="aimStick"></div>
+                </div>
+                <div class="pad-label">照準・射撃</div>
+            </div>
+        </div>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

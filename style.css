@@ -1,0 +1,195 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #1a1a2e;
+    font-family: Arial, sans-serif;
+    touch-action: none; /* モバイルでのスクロールを防ぐ */
+    overflow: hidden; /* スクロールバーを非表示 */
+    width: 100vw;
+    height: 100vh;
+}
+
+.game-container {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#gameCanvas {
+    border: 2px solid #16213e;
+    background-color: #0f0f23;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    max-width: 100vw;
+    max-height: 100vh;
+    width: auto;
+    height: auto;
+}
+
+.controls {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ffffff;
+    font-size: 12px;
+    text-align: center;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 5px 10px;
+    border-radius: 5px;
+    z-index: 1000;
+}
+
+/* バーチャルパッドのスタイル */
+.virtual-controls {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none; /* 全体は非アクティブ */
+    z-index: 999;
+}
+
+.movement-pad {
+    position: absolute;
+    bottom: 30px;
+    left: 30px;
+    pointer-events: auto;
+}
+
+.rotation-pad {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    pointer-events: auto;
+}
+
+.pad-outer {
+    width: 120px;
+    height: 120px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pad-inner {
+    width: 45px;
+    height: 45px;
+    background-color: rgba(255, 255, 255, 0.8);
+    border-radius: 50%;
+    position: absolute;
+    cursor: pointer;
+    transition: all 0.1s ease;
+}
+
+.pad-label {
+    color: white;
+    font-size: 12px;
+    text-align: center;
+    margin-top: 5px;
+    user-select: none;
+}
+
+/* モバイル向けの調整 */
+@media (max-width: 768px) {
+    #gameCanvas {
+        width: 100vw;
+        height: 70vh;
+        max-width: none;
+        max-height: none;
+    }
+    
+    .controls {
+        display: none; /* モバイルでは操作説明を非表示 */
+    }
+    
+    .movement-pad {
+        bottom: 20px;
+        left: 20px;
+    }
+    
+    .rotation-pad {
+        bottom: 20px;
+        right: 20px;
+    }
+}
+
+/* 小さな画面向けの調整 */
+@media (max-width: 480px) {
+    .pad-outer {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .pad-inner {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .movement-pad {
+        bottom: 15px;
+        left: 15px;
+    }
+    
+    .rotation-pad {
+        bottom: 15px;
+        right: 15px;
+    }
+}
+
+/* ランドスケープモード（横向き）の調整 */
+@media (max-height: 500px) and (orientation: landscape) {
+    #gameCanvas {
+        height: 100vh;
+        width: auto;
+    }
+    
+    .movement-pad {
+        bottom: 10px;
+        left: 10px;
+    }
+    
+    .rotation-pad {
+        bottom: 10px;
+        right: 10px;
+    }
+    
+    .pad-outer {
+        width: 80px;
+        height: 80px;
+    }
+    
+    .pad-inner {
+        width: 30px;
+        height: 30px;
+    }
+}
+
+/* デスクトップでの表示（透明度を下げて控えめに） */
+@media (min-width: 769px) {
+    .virtual-controls {
+        opacity: 0.7;
+    }
+    
+    .virtual-controls:hover {
+        opacity: 1;
+    }
+    
+    .controls {
+        position: relative;
+        bottom: auto;
+        left: auto;
+        transform: none;
+        margin-top: 20px;
+        background-color: transparent;
+        font-size: 16px;
+    }
+}
